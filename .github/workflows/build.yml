@@ -16,8 +16,6 @@ jobs:
         include:
           - runner: macos-26
             arch: arm64
-          - runner: macos-26-intel
-            arch: x64
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 45
     steps:
@@ -81,8 +79,8 @@ jobs:
           tag="build-${RUN_ID}-${RUN_ATTEMPT}"
           {
             printf 'Unsigned macOS build from commit `%s`.\n\n' "$COMMIT"
-            printf 'Download the arm64 app for Apple Silicon or x64 for Intel. Each architecture includes a DMG and a zipped app.\n\n'
-            printf 'Minimum macOS: Apple Silicon %s; Intel %s.\n\n' "$(cat minimum-macos-arm64.txt)" "$(cat minimum-macos-x64.txt)"
+            printf 'Download the arm64 app for Apple Silicon. Includes a DMG and a zipped app. GPUIX 0.11.0 does not ship an Intel macOS binary.\n\n'
+            printf 'Minimum macOS: %s.\n\n' "$(cat minimum-macos-arm64.txt)"
             printf 'These apps are not Developer ID signed or notarized. macOS may require approval to open them. Automatic in-app updates remain disabled.\n'
           } > release-notes.md
           gh release create "$tag" *.dmg *.zip SHA256SUMS.txt \

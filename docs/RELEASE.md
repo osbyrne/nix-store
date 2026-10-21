@@ -21,7 +21,7 @@ The packager needs `assets/Nixstore.icns`. The supplied original image is preser
 
 The packaging script inspects the actual executable's Mach-O minimum macOS version and puts that value into the generated app configuration. This machine's Bun 1.4.3 executable reports **macOS 27.0**; the local app therefore requires macOS 27.0. The GPUIX addon itself reports 11.0. Do not change Info.plist to claim compatibility with an older OS without testing a Bun runtime built for it.
 
-[`.github/workflows/build.yml`](../.github/workflows/build.yml) builds Apple Silicon and Intel apps on `macos-26` and `macos-26-intel`. Both builds must pass typecheck, tests, and packaging before publication. Releases contain architecture-specific DMGs and zipped apps plus `SHA256SUMS.txt`. The release notes record the actual minimum macOS version for each architecture.
+[`.github/workflows/build.yml`](../.github/workflows/build.yml) builds Apple Silicon apps on `macos-26`. Typecheck, tests, and packaging must pass before publication. Intel Macs are unsupported because GPUIX 0.11.0 does not publish an Intel macOS binary. Releases contain architecture-specific DMGs and zipped apps plus `SHA256SUMS.txt`. The release notes record the actual minimum macOS version for each architecture.
 
 Each run creates a unique `build-<run-id>-<attempt>` tag at the exact pushed commit and publishes a prerelease at https://github.com/osbyrne/nix-store/releases. The automatically generated tag uses `GITHUB_TOKEN` and does not trigger another build. No signing or notarization secrets are required. Bun's required ad hoc executable signature may remain; these builds have no Developer ID distribution signature or notarization.
 

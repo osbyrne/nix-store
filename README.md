@@ -42,9 +42,9 @@ bun run package
 
 Outputs: `bundle/Nixstore.app` and an architecture-specific DMG in `bundle/`. No Rust toolchain is needed to develop or compile Nixstore itself; cargo-packager is the separate packaging utility selected in the brief.
 
-Every push publishes an **unsigned prerelease** with Apple Silicon and Intel DMGs, zipped apps, and SHA-256 checksums at [GitHub Releases](https://github.com/osbyrne/nix-store/releases). See the [build workflow](https://github.com/osbyrne/nix-store/actions/workflows/build.yml).
+Every push publishes an **unsigned prerelease** with Apple Silicon DMGs, zipped apps, and SHA-256 checksums at [GitHub Releases](https://github.com/osbyrne/nix-store/releases). See the [build workflow](https://github.com/osbyrne/nix-store/actions/workflows/build.yml).
 
-The current local artifact is **unsigned**, with signing and notarization skipped at the user's request. This machine's Bun runtime requires macOS 27.0; the packaging script records the actual binary minimum in Info.plist. Intel packaging is prepared in CI but has not run here. See [release instructions](docs/RELEASE.md) for supported release preparation, signatures, notarization, GitHub Releases assets, and update configuration.
+The current local artifact is **unsigned**, with signing and notarization skipped at the user's request. This machine's Bun runtime requires macOS 27.0; the packaging script records the actual binary minimum in Info.plist. Intel Macs are not supported because GPUIX 0.11.0 only publishes an arm64 macOS binary. See [release instructions](docs/RELEASE.md) for supported release preparation, signatures, notarization, GitHub Releases assets, and update configuration.
 
 `checkUpdate` is wired through an Effect service. The unsigned development build has no configured release repository/public key and reports that clearly in Settings. It does not download unverifiable updates.
 
