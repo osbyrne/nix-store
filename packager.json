@@ -1,0 +1,27 @@
+{
+  "$schema": "https://raw.githubusercontent.com/crabnebula-dev/cargo-packager/main/crates/packager/schema.json",
+  "productName": "Nixstore",
+  "version": "0.1.0",
+  "identifier": "dev.osbyrne.nixstore",
+  "description": "A native Mac software store for Nix and Homebrew",
+  "binariesDir": "dist",
+  "outDir": "bundle",
+  "binaries": [
+    {
+      "path": "nixstore",
+      "main": true
+    }
+  ],
+  "icons": [
+    "assets/Nixstore.icns"
+  ],
+  "formats": [
+    "app",
+    "dmg"
+  ],
+  "macos": {
+    "minimumSystemVersion": "13.0",
+    "entitlements": "assets/entitlements.plist"
+  },
+  "name": "nixstore"
+}

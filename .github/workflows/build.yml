@@ -1,0 +1,92 @@
+name: Release unsigned macOS apps
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build ${{ matrix.arch }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: macos-26
+            arch: arm64
+          - runner: macos-26-intel
+            arch: x64
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.3
+      - run: bun install --frozen-lockfile
+      - run: bun run typecheck
+      - run: bun test
+      - uses: actions/cache@v4
+        id: packager
+        with:
+          path: ~/.cargo/bin/cargo-packager
+          key: cargo-packager-0.11.8-${{ runner.os }}-${{ runner.arch }}
+      - if: steps.packager.outputs.cache-hit != 'true'
+        run: cargo install cargo-packager --version 0.11.8 --locked
+      - run: bun run package
+      - name: Prepare release downloads
+        env:
+          ARCH: ${{ matrix.arch }}
+        run: |
+          mkdir -p release-assets
+          ditto -c -k --sequesterRsrc --keepParent bundle/Nixstore.app "release-assets/Nixstore-macos-${ARCH}.app.zip"
+          dmgs=(bundle/*.dmg)
+          test "${#dmgs[@]}" -eq 1
+          cp "${dmgs[0]}" "release-assets/Nixstore-macos-${ARCH}.dmg"
+          /usr/libexec/PlistBuddy -c 'Print :LSMinimumSystemVersion' bundle/Nixstore.app/Contents/Info.plist > "release-assets/minimum-macos-${ARCH}.txt"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nixstore-${{ matrix.arch }}-unsigned
+          path: release-assets/*
+          if-no-files-found: error
+          retention-days: 7
+
+  release:
+    name: Publish release
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: nixstore-*-unsigned
+          path: release-assets
+          merge-multiple: true
+      - name: Publish unsigned downloads
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          COMMIT: ${{ github.sha }}
+          RUN_NUMBER: ${{ github.run_number }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+        shell: bash
+        run: |
+          cd release-assets
+          sha256sum *.dmg *.zip > SHA256SUMS.txt
+          tag="build-${RUN_ID}-${RUN_ATTEMPT}"
+          {
+            printf 'Unsigned macOS build from commit `%s`.\n\n' "$COMMIT"
+            printf 'Download the arm64 app for Apple Silicon or x64 for Intel. Each architecture includes a DMG and a zipped app.\n\n'
+            printf 'Minimum macOS: Apple Silicon %s; Intel %s.\n\n' "$(cat minimum-macos-arm64.txt)" "$(cat minimum-macos-x64.txt)"
+            printf 'These apps are not Developer ID signed or notarized. macOS may require approval to open them. Automatic in-app updates remain disabled.\n'
+          } > release-notes.md
+          gh release create "$tag" *.dmg *.zip SHA256SUMS.txt \
+            --target "$COMMIT" \
+            --title "Nixstore build ${RUN_NUMBER} (${COMMIT:0:7})" \
+            --notes-file release-notes.md \
+            --prerelease

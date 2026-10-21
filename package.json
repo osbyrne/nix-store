@@ -1,0 +1,33 @@
+{
+  "name": "nixstore",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --hot src/main.tsx",
+    "start": "bun src/main.tsx",
+    "test": "bun test",
+    "verify:native": "bun scripts/verify-native.ts",
+    "build": "bun scripts/build.ts",
+    "typecheck": "tsc --noEmit",
+    "build:compile": "bun scripts/build.ts --compile",
+    "package": "bun scripts/package.ts",
+    "verify:catalog": "bun scripts/verify-catalog.ts",
+    "verify:nix": "bun scripts/verify-nix-lifecycle.ts",
+    "icon": "bun scripts/icon.ts"
+  },
+  "dependencies": {
+    "@gpuix/native": "0.11.0",
+    "@gpuix/solid": "0.11.0",
+    "solid-js": "1.9.15",
+    "effect": "4.0.0-beta.107",
+    "@effect/platform-bun": "4.0.0-beta.107"
+  },
+  "overrides": {
+    "@effect/platform-node-shared": "4.0.0-beta.107"
+  },
+  "devDependencies": {
+    "@types/bun": "1.4.3",
+    "typescript": "7.0.2"
+  }
+}

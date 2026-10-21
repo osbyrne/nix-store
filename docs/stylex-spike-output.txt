@@ -1,0 +1,68 @@
+import { createTextNode as _$createTextNode } from "@gpuix/solid";
+import { insertNode as _$insertNode } from "@gpuix/solid";
+import { spread as _$spread } from "@gpuix/solid";
+import { mergeProps as _$mergeProps } from "@gpuix/solid";
+import { createElement as _$createElement } from "@gpuix/solid";
+import * as stylex from '@stylexjs/stylex';
+export const App = () => (() => {
+  var _el$ = _$createElement("div"),
+    _el$2 = _$createElement("text");
+  _$insertNode(_el$, _el$2);
+  _$spread(_el$, _$mergeProps(() => ({
+    className: "xrkmrrc x1awj2ng"
+  })), true);
+  _$insertNode(_el$2, _$createTextNode(`Hello`));
+  return _el$;
+})();
+{
+  "stylex": [
+    [
+      "xrkmrrc",
+      {
+        "ltr": ".xrkmrrc{background-color:red}",
+        "rtl": null
+      },
+      3000
+    ],
+    [
+      "x1awj2ng",
+      {
+        "ltr": ".x1awj2ng{color:white}",
+        "rtl": null
+      },
+      3000
+    ]
+  ],
+  "config": {
+    "moduleName": "@gpuix/solid",
+    "generate": "universal",
+    "hydratable": false,
+    "delegateEvents": true,
+    "delegatedEvents": [],
+    "builtIns": [
+      "For",
+      "Show",
+      "Switch",
+      "Match",
+      "Suspense",
+      "SuspenseList",
+      "Portal",
+      "Index",
+      "Dynamic",
+      "ErrorBoundary"
+    ],
+    "requireImportSource": false,
+    "wrapConditionals": true,
+    "omitNestedClosingTags": false,
+    "omitLastClosingTag": true,
+    "omitQuotes": true,
+    "omitAttributeSpacing": true,
+    "contextToCustomElements": true,
+    "omitServerOnlyTemplates": true,
+    "staticMarker": "@once",
+    "effectWrapper": "effect",
+    "memoWrapper": "memo",
+    "validate": true,
+    "inlineStyles": true
+  }
+}

@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.DS_Store
+artifacts/
+bundle/
+.packager-local.json
+
+# Bun compiler temporary executables and local environment
+.*.bun-build
+.env
+.env.*
+!.env.example
